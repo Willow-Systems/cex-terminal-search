@@ -1,0 +1,68 @@
+#!/usr/bin/node
+const cTable = require('console.table');
+const https = require('https');
+
+var searchTerm = process.argv[2];
+var outputTable = [];
+
+if (searchTerm == null || searchTerm == "") {
+	console.log("Usage: " + process.argv[1] + " {search term}");
+	process.exit;
+}
+
+searchTerm = searchTerm.replace(" ", "%20");
+var url = "https://wss2.cex.uk.webuy.io/v3/boxes?q=" + searchTerm + "&firstRecord=1&count=50&sortBy=relevance&sortOrder=desc"
+
+function ratingToStars(rating) {
+	var output = "";
+	var remain = 5;
+	for (var i = 0; i < rating; i++) {
+		output = output + "★ "
+		remain -= 1;
+	}
+	for (var i = 0; i < remain; i++) {
+		output = output + "☆ "
+	}
+	return output;
+}
+
+function parseSearchResult(data) {
+	//console.log(data);
+	data = JSON.parse(data);
+	var arr = data.response.data.boxes;
+	for (var i = 0; i < arr.length; i++) {
+
+		if (arr[i].outOfStock == 0) {
+
+			var tempObj = {};
+			tempObj.Item = arr[i].boxName;
+			tempObj.Price = "£" + arr[i].sellPrice;
+			tempObj.Category = arr[i].categoryFriendlyName;
+			if (arr[i].boxRating != null) {
+				tempObj.Rating = ratingToStars(arr[i].boxRating);
+			}
+			outputTable.push(tempObj);
+
+		}
+
+	}
+	console.table(outputTable);
+}
+
+https.get(url, (resp) => {
+  let data = '';
+
+  // A chunk of data has been recieved.
+  resp.on('data', (chunk) => {
+    data += chunk;
+  });
+
+  // The whole response has been received. Print out the result.
+  resp.on('end', () => {
+	parseSearchResult(data);
+  });
+
+}).on("error", (err) => {
+  console.log("Error: " + err.message);
+});
+
