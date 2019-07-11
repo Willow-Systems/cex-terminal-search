@@ -38,6 +38,7 @@ function parseSearchResult(data) {
 			tempObj.Item = arr[i].boxName;
 			tempObj.Price = "£" + arr[i].sellPrice;
 			tempObj.Category = arr[i].categoryFriendlyName;
+			tempObj.Quantity = arr[i].ecomQuantityOnHand;
 			if (arr[i].boxRating != null) {
 				tempObj.Rating = ratingToStars(arr[i].boxRating);
 			}
