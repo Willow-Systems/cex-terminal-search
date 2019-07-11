@@ -10,6 +10,6 @@ You'll need NodeJS to start, then two libs:
 
 #### Usage
 
-Just run ./cexterm "<search term>"
+Just run ./cexterm "search term"
 
 At the moment it only returns in stock items, I'll add some arguments later
