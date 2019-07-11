@@ -16,4 +16,4 @@ At the moment it only returns in stock items, I'll add some arguments later
 
 #### Screenshot
 
-![Searching for potato](/screenshots/1.jgp "Searching for potato")
+![Searching for potato](https://raw.githubusercontent.com/WillJMurphy/cex-terminal-search/master/screenshots/1.jpg "Searching for potato")
