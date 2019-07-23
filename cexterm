@@ -11,6 +11,7 @@ if (searchTerm == null || searchTerm == "") {
 }
 
 searchTerm = searchTerm.replace(" ", "%20");
+
 var url = "https://wss2.cex.uk.webuy.io/v3/boxes?q=" + searchTerm + "&firstRecord=1&count=50&sortBy=relevance&sortOrder=desc"
 
 function ratingToStars(rating) {
@@ -29,25 +30,29 @@ function ratingToStars(rating) {
 function parseSearchResult(data) {
 	//console.log(data);
 	data = JSON.parse(data);
-	var arr = data.response.data.boxes;
-	for (var i = 0; i < arr.length; i++) {
-
-		if (arr[i].outOfStock == 0) {
-
-			var tempObj = {};
-			tempObj.Item = arr[i].boxName;
-			tempObj.Price = "£" + arr[i].sellPrice;
-			tempObj.Category = arr[i].categoryFriendlyName;
-			tempObj.Quantity = arr[i].ecomQuantityOnHand;
-			if (arr[i].boxRating != null) {
-				tempObj.Rating = ratingToStars(arr[i].boxRating);
+	if (data.response.data != null && data.response.data.boxes != null) {
+		var arr = data.response.data.boxes;
+		for (var i = 0; i < arr.length; i++) {
+	
+			if (arr[i].outOfStock == 0) {
+	
+				var tempObj = {};
+				tempObj.Item = arr[i].boxName;
+				tempObj.Price = "£" + arr[i].sellPrice;
+				tempObj.Category = arr[i].categoryFriendlyName;
+				tempObj.Quantity = arr[i].ecomQuantityOnHand;
+				if (arr[i].boxRating != null) {
+					tempObj.Rating = ratingToStars(arr[i].boxRating);
+				}
+				outputTable.push(tempObj);
+	
 			}
-			outputTable.push(tempObj);
-
+	
 		}
-
+		console.table(outputTable);
+	} else {
+		console.log("No Results");
 	}
-	console.table(outputTable);
 }
 
 https.get(url, (resp) => {
